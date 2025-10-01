@@ -11,6 +11,7 @@
         <div class="container mx-auto flex justify-between items-center p-4">
             <h1 class="text-xl font-bold">Мой сайт на Laravel</h1>
             <nav class="space-x-4">
+
                 <a href="{{ route('home') }}" class="text-blue-500 hover:underline">Главная</a>
                 <a href="{{ route('about') }}" class="text-blue-500 hover:underline">О нас</a>
                 <a href="{{ route('contacts') }}" class="text-blue-500 hover:underline">Контакты</a>
@@ -18,10 +19,15 @@
 
                 @guest
                     <a href="{{ route('signin.create') }}" class="text-blue-500 hover:underline">Регистрация</a>
+                    <a href="{{ route('login.create') }}" class="text-blue-500 hover:underline">Вход</a>
                 @endguest
 
                 @auth
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @can('create', App\Models\Article::class)
+                        <a href="{{ route('articles.create') }}" class="text-green-500 hover:underline">Создать новость</a>
+                    @endcan
+
+                    <form method="POST" action="{{ route('logout') }}" class="inline-block">
                         @csrf
                         <button type="submit" class="text-red-500 hover:underline">Выйти</button>
                     </form>

@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Article::class => ArticlePolicy::class,
-        Comment::class => CommentPolicy::class,
+        Comment::class => CommentPolicy::class, // <-- Здесь регистрируем политику для комментариев
     ];
 
     /**
@@ -28,6 +28,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // Здесь можно добавить Gates
+        // Здесь можно добавлять Gates
     }
 }

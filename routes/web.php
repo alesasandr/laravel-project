@@ -54,5 +54,7 @@ Route::get('/contacts', function () {
 // Новости и CRUD для статей
 Route::resource('articles', ArticleController::class);
 
-// Комментарии (только store и destroy)
-Route::resource('comments', CommentController::class)->only(['store', 'destroy']);
+Route::resource('comments', CommentController::class)->only([
+    'store', 'edit', 'update', 'destroy'
+]);
+
