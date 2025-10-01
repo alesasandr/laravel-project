@@ -11,9 +11,11 @@
             <a href="{{ route('home') }}">Главная</a> |
             <a href="{{ route('about') }}">О нас</a> |
             <a href="{{ route('contacts') }}">Контакты</a> |
-            <a href="{{ route('signin.create') }}">Регистрация</a>
+            <a href="{{ route('signin.create') }}">Регистрация</a> |
+            <a href="{{ route('articles.index') }}">Новости</a> <!-- <- Добавили -->
         </nav>
     </header>
+
 
     <main>
         @yield('content')

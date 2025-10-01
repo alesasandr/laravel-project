@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ArticleController;
 
 // Главная — теперь через контроллер
 Route::get('/', [MainController::class, 'index'])->name('home');
@@ -30,3 +31,6 @@ Route::get('/contacts', function () {
     ];
     return view('contacts', compact('contacts'));
 })->name('contacts');
+
+//новости
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
