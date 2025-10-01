@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Фото 1",
+    "preview_image": "/images/preview1.jpg",
+    "full_image": "/images/full1.jpg"
+  },
+  {
+    "title": "Фото 2",
+    "preview_image": "/images/preview2.jpg",
+    "full_image": "/images/full2.jpg"
+  },
+  {
+    "title": "Фото 3",
+    "preview_image": "/images/preview3.jpg",
+    "full_image": "/images/full3.jpg"
+  }
+]
