@@ -7,14 +7,19 @@ use Illuminate\Http\Request;
 class MainController extends Controller
 {
     public function index()
-    {
-        // Загружаем JSON
-        $json = file_get_contents(public_path('data/data.json'));
-        $data = json_decode($json, true); // Теперь переменная $data
+		{
+				$jsonPath = public_path('data/data.json');
 
-        // Передаём в шаблон
-        return view('home', compact('data'));
-    }
+				if (!file_exists($jsonPath)) {
+						$items = []; // если файл не найден, создаём пустой массив
+				} else {
+						$json = file_get_contents($jsonPath);
+						$items = json_decode($json, true) ?? [];
+				}
+
+				return view('home', compact('items'));
+		}
+
 
     public function gallery($id)
     {

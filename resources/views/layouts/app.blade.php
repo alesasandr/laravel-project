@@ -15,7 +15,17 @@
                 <a href="{{ route('about') }}" class="text-blue-500 hover:underline">О нас</a>
                 <a href="{{ route('contacts') }}" class="text-blue-500 hover:underline">Контакты</a>
                 <a href="{{ route('articles.index') }}" class="text-blue-500 hover:underline">Новости</a>
-                <a href="{{ route('signin.create') }}" class="text-blue-500 hover:underline">Регистрация</a>
+
+                @guest
+                    <a href="{{ route('signin.create') }}" class="text-blue-500 hover:underline">Регистрация</a>
+                @endguest
+
+                @auth
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-red-500 hover:underline">Выйти</button>
+                    </form>
+                @endauth
             </nav>
         </div>
     </header>
