@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
-use App\Mail\NewArticleNotification;
-use Illuminate\Support\Facades\Mail;
-use App\Models\User;
+use App\Jobs\VeryLongJob;
+use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
@@ -14,7 +13,9 @@ class ArticleController extends Controller
     public function index()
     {
         // Загружаем статьи с комментариями и их авторами, чтобы избежать N+1 запроса
-        $articles = Article::with('comments.author')->latest()->paginate(5);
+        $articles = Article::with(['comments' => fn($q) => $q->where('is_approved', true)->with('author')])
+                           ->latest()
+                           ->paginate(5);
         return view('articles.index', compact('articles'));
     }
 
@@ -39,28 +40,16 @@ class ArticleController extends Controller
         // Создаем статью
         $article = Article::create($validated);
 
-        // Получаем всех модераторов
-        $moderators = User::whereHas('role', fn($q) => $q->where('name', 'moderator'))->get();
-
-        // Отправляем письма модераторам
-        foreach ($moderators as $moderator) {
-            try {
-                Mail::to($moderator->email)->send(new NewArticleNotification($article));
-            } catch (\Exception $e) {
-                \Log::error("Ошибка отправки письма модератору {$moderator->email}: " . $e->getMessage());
-            }
-        }
-
-        // Отправляем тестовое письмо на твой ящик
+        // Отправляем уведомления через очередь
         try {
-            Mail::to('vasko.aleksandar@yandex.ru')->send(new NewArticleNotification($article));
+            VeryLongJob::dispatch($article);
         } catch (\Exception $e) {
-            \Log::error("Ошибка отправки тестового письма: " . $e->getMessage());
+            Log::error("Ошибка постановки задачи в очередь: " . $e->getMessage());
         }
 
-        return redirect()->route('articles.index')->with('success', 'Статья создана и модераторы уведомлены!');
+        return redirect()->route('articles.index')
+                         ->with('success', 'Статья создана и уведомления отправлены модераторам!');
     }
-
 
     // Форма редактирования новости
     public function edit(Article $article)
@@ -95,9 +84,9 @@ class ArticleController extends Controller
     // Просмотр одной новости
     public function show($id)
     {
+        // Загружаем только одобренные комментарии
         $article = Article::with(['comments' => fn($q) => $q->where('is_approved', true)->with('author')])
-                  ->findOrFail($id);
+                          ->findOrFail($id);
         return view('articles.show', compact('article'));
-
     }
 }
