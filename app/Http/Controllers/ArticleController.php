@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Mail\NewArticleNotification;
+use Illuminate\Support\Facades\Mail;
+use App\Models\User;
 
 class ArticleController extends Controller
 {
@@ -15,30 +18,73 @@ class ArticleController extends Controller
         return view('articles.index', compact('articles'));
     }
 
+    // Форма создания новости
     public function create()
     {
         $this->authorize('create', Article::class);
         return view('articles.create');
     }
 
+    // Сохраняем новую статью
     public function store(Request $request)
     {
         $this->authorize('create', Article::class);
-        // валидация и создание статьи
+
+        // Валидация
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        // Создаем статью
+        $article = Article::create($validated);
+
+        // Получаем всех модераторов
+        $moderators = User::whereHas('role', fn($q) => $q->where('name', 'moderator'))->get();
+
+        // Отправляем письма модераторам
+        foreach ($moderators as $moderator) {
+            try {
+                Mail::to($moderator->email)->send(new NewArticleNotification($article));
+            } catch (\Exception $e) {
+                \Log::error("Ошибка отправки письма модератору {$moderator->email}: " . $e->getMessage());
+            }
+        }
+
+        // Отправляем тестовое письмо на твой ящик
+        try {
+            Mail::to('vasko.aleksandar@yandex.ru')->send(new NewArticleNotification($article));
+        } catch (\Exception $e) {
+            \Log::error("Ошибка отправки тестового письма: " . $e->getMessage());
+        }
+
+        return redirect()->route('articles.index')->with('success', 'Статья создана и модераторы уведомлены!');
     }
 
+
+    // Форма редактирования новости
     public function edit(Article $article)
     {
         $this->authorize('update', $article);
         return view('articles.edit', compact('article'));
     }
 
+    // Обновляем новость
     public function update(Request $request, Article $article)
     {
         $this->authorize('update', $article);
-        // валидация и обновление
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $article->update($validated);
+
+        return redirect()->route('articles.index')->with('success', 'Статья обновлена!');
     }
 
+    // Удаляем новость
     public function destroy(Article $article)
     {
         $this->authorize('delete', $article);
@@ -46,11 +92,10 @@ class ArticleController extends Controller
         return redirect()->route('articles.index')->with('success', 'Статья удалена!');
     }
 
-
     // Просмотр одной новости
     public function show($id)
     {
-        $article = Article::findOrFail($id); // ищем статью по ID
-        return view('articles.show', compact('article')); // передаём в шаблон
+        $article = Article::with('comments.author')->findOrFail($id); // загружаем комментарии с авторами
+        return view('articles.show', compact('article'));
     }
 }
