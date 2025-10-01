@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
 
 // Главная — теперь через контроллер
 Route::get('/', [MainController::class, 'index'])->name('home');
@@ -33,4 +34,6 @@ Route::get('/contacts', function () {
 })->name('contacts');
 
 //новости
-Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::resource('articles', ArticleController::class);
+
+Route::resource('comments', CommentController::class)->only(['store', 'destroy']);

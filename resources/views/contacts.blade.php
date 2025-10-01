@@ -3,10 +3,13 @@
 @section('title', 'Контакты')
 
 @section('content')
-<h1>Контакты</h1>
-<ul>
+<h2 class="text-2xl font-bold mb-4">Контакты</h2>
+
+<ul class="space-y-2">
     @foreach($contacts as $contact)
-        <li>{{ $contact['name'] }} — {{ $contact['email'] }}</li>
+        <li class="p-2 bg-gray-100 rounded shadow">
+            <strong>{{ $contact['name'] }}</strong>: {{ $contact['email'] }}
+        </li>
     @endforeach
 </ul>
 @endsection

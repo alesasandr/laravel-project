@@ -10,19 +10,19 @@ class MainController extends Controller
     {
         // Загружаем JSON
         $json = file_get_contents(public_path('data/data.json'));
-        $items = json_decode($json, true);
+        $data = json_decode($json, true); // Теперь переменная $data
 
         // Передаём в шаблон
-        return view('home', compact('items'));
+        return view('home', compact('data'));
     }
 
     public function gallery($id)
     {
         $json = file_get_contents(public_path('data/data.json'));
-        $items = json_decode($json, true);
+        $data = json_decode($json, true);
 
         // Находим нужный элемент по ID
-        $item = $items[$id] ?? null;
+        $item = $data[$id] ?? null;
 
         if (!$item) {
             abort(404);

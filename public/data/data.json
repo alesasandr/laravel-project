@@ -1,16 +1,19 @@
 [
   {
-    "title": "Фото 1",
+    "title": "Приветствие 1",
+    "description": "Описание приветствия 1",
     "preview_image": "/images/preview1.jpg",
     "full_image": "/images/full1.jpg"
   },
   {
-    "title": "Фото 2",
+    "title": "Приветствие 2",
+    "description": "Описание приветствия 2",
     "preview_image": "/images/preview2.jpg",
     "full_image": "/images/full2.jpg"
   },
   {
-    "title": "Фото 3",
+    "title": "Приветствие 3",
+    "description": "Описание приветствия 3",
     "preview_image": "/images/preview3.jpg",
     "full_image": "/images/full3.jpg"
   }

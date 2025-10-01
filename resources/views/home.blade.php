@@ -1,22 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Главная страница</h1>
+<h1 class="text-3xl font-bold mb-4">Главная страница</h1>
 
-    <table border="1" cellpadding="10">
+<table class="table-auto border-collapse border border-gray-300 w-full">
+    <thead>
         <tr>
-            <th>Название</th>
-            <th>Превью</th>
+            <th class="border px-4 py-2">Название</th>
+            <th class="border px-4 py-2">Описание</th>
+            <th class="border px-4 py-2">Картинка</th>
         </tr>
-        @foreach ($items as $index => $item)
+    </thead>
+    <tbody>
+        @foreach($data as $item)
             <tr>
-                <td>{{ $item['title'] }}</td>
-                <td>
-                    <a href="{{ route('gallery', $index) }}">
-                        <img src="{{ $item['preview_image'] }}" alt="{{ $item['title'] }}" width="100">
-                    </a>
+                <td class="border px-4 py-2">{{ $item['title'] ?? 'Без названия' }}</td>
+                <td class="border px-4 py-2">{{ $item['description'] ?? 'Нет описания' }}</td>
+                <td class="border px-4 py-2">
+                    @if(!empty($item['preview_image']))
+                        <img src="{{ asset($item['preview_image']) }}" alt="{{ $item['title'] }}" style="width: 100px;">
+                    @else
+                        Нет изображения
+                    @endif
                 </td>
             </tr>
         @endforeach
-    </table>
+    </tbody>
+</table>
 @endsection

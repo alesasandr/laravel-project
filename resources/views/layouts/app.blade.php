@@ -3,26 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laravel Site</title>
+    <title>@yield('title', 'Laravel Project')</title>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="{{ route('home') }}">Главная</a> |
-            <a href="{{ route('about') }}">О нас</a> |
-            <a href="{{ route('contacts') }}">Контакты</a> |
-            <a href="{{ route('signin.create') }}">Регистрация</a> |
-            <a href="{{ route('articles.index') }}">Новости</a> <!-- <- Добавили -->
-        </nav>
+<body class="bg-gray-50 font-sans text-gray-800">
+    <header class="bg-white shadow">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-xl font-bold">Мой сайт на Laravel</h1>
+            <nav class="space-x-4">
+                <a href="{{ route('home') }}" class="text-blue-500 hover:underline">Главная</a>
+                <a href="{{ route('about') }}" class="text-blue-500 hover:underline">О нас</a>
+                <a href="{{ route('contacts') }}" class="text-blue-500 hover:underline">Контакты</a>
+                <a href="{{ route('articles.index') }}" class="text-blue-500 hover:underline">Новости</a>
+                <a href="{{ route('signin.create') }}" class="text-blue-500 hover:underline">Регистрация</a>
+            </nav>
+        </div>
     </header>
 
-
-    <main>
+    <main class="container mx-auto mt-6 p-4">
         @yield('content')
     </main>
 
-    <footer>
-        <p>Васько Александр Игоревич 231-322</p>
+    <footer class="bg-white mt-12 shadow py-4">
+        <div class="container mx-auto text-center text-gray-500">
+            Васько Александр 231-322
+        </div>
     </footer>
 </body>
 </html>

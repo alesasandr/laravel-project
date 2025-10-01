@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Article;
+use App\Models\Comment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +13,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Article::factory()->count(10)->create();
+        // Создаём 5 статей
+        Article::factory(5)->create()->each(function ($article) {
+            // Для каждой статьи создаём 3 комментария
+            Comment::factory(3)->create([
+                'article_id' => $article->id
+            ]);
+        });
+
+        // Дополнительно можно создать "ручные" статьи, если нужно
+        /*
+        $article = Article::create([
+            'title' => 'Пример статьи',
+            'content' => 'Это пример содержания статьи.'
+        ]);
+
+        Comment::create([
+            'article_id' => $article->id,
+            'author' => 'Иван Иванов',
+            'content' => 'Пример комментария к статье.'
+        ]);
+        */
     }
 }
