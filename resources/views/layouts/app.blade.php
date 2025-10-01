@@ -23,6 +23,13 @@
                 @endguest
 
                 @auth
+                    {{-- Ссылка только для модератора на страницу проверки комментариев --}}
+                    @if(auth()->user()->role && auth()->user()->role->name === 'moderator')
+                        <a href="{{ route('comments.moderation') }}" class="text-purple-600 font-semibold hover:underline">
+                            Модерация комментариев
+                        </a>
+                    @endif
+
                     @can('create', App\Models\Article::class)
                         <a href="{{ route('articles.create') }}" class="text-green-500 hover:underline">Создать новость</a>
                     @endcan

@@ -10,15 +10,18 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'content' => 'required|string',
             'article_id' => 'required|exists:articles,id',
-            'content' => 'required|min:3',
         ]);
 
-        $validated['author_id'] = auth()->id(); // автоматически текущий пользователь
+        $comment = Comment::create([
+            'content' => $validated['content'],
+            'article_id' => $validated['article_id'],
+            'author_id' => auth()->id(),
+            'is_approved' => false, // по умолчанию не одобрен
+        ]);
 
-        Comment::create($validated);
-
-        return redirect()->back()->with('success', 'Комментарий добавлен!');
+        return redirect()->back()->with('success', 'Ваш комментарий добавлен и ожидает модерации.');
     }
 
     public function edit(Comment $comment)
@@ -38,6 +41,36 @@ class CommentController extends Controller
         $comment->update($validated);
 
         return redirect()->back()->with('success', 'Комментарий обновлён!');
+    }
+
+    // Метод для отображения страницы модерации
+    public function moderation()
+    {
+        $this->authorize('moderate', Comment::class);
+
+        $comments = Comment::where('is_approved', false)->get();
+        return view('comments.moderation', compact('comments'));
+    }
+
+    // Метод для одобрения комментария
+    public function approve(Comment $comment)
+    {
+        $this->authorize('moderate', $comment);
+
+        $comment->is_approved = true;
+        $comment->save();
+
+        return redirect()->back()->with('success', 'Комментарий одобрен!');
+    }
+
+    // Метод для отклонения комментария
+    public function reject(Comment $comment)
+    {
+        $this->authorize('moderate', $comment);
+
+        $comment->delete();
+
+        return redirect()->back()->with('success', 'Комментарий отклонен!');
     }
 
     public function destroy(Comment $comment)

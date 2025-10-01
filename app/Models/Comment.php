@@ -11,9 +11,11 @@ class Comment extends Model
 
     protected $fillable = [
         'article_id',
+        'author_id',
         'content',
-        'author_id', // теперь только author_id
+        'is_approved', // добавляем
     ];
+
 
     // Автор комментария
     public function author()

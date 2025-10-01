@@ -41,9 +41,10 @@
             <div class="mt-4">
                 <h4 class="font-semibold">Комментарии:</h4>
                 <ul class="ml-4 space-y-2">
-                    @foreach($article->comments as $comment)
+                    {{-- показываем только прошедшие модерацию --}}
+                    @foreach($article->comments->where('is_approved', true) as $comment)
                         <li>
-                            <strong>{{ $comment->author->name ?? 'Гость' }}</strong>: {{ $comment->content }}
+                            <strong>{{ $comment->author->name ?? $comment->author ?? 'Гость' }}</strong>: {{ $comment->content }}
 
                             {{-- Редактировать комментарий только автор или модератор --}}
                             @can('update', $comment)

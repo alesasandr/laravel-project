@@ -95,7 +95,9 @@ class ArticleController extends Controller
     // Просмотр одной новости
     public function show($id)
     {
-        $article = Article::with('comments.author')->findOrFail($id); // загружаем комментарии с авторами
+        $article = Article::with(['comments' => fn($q) => $q->where('is_approved', true)->with('author')])
+                  ->findOrFail($id);
         return view('articles.show', compact('article'));
+
     }
 }

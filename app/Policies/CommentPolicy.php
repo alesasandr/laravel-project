@@ -25,6 +25,11 @@ class CommentPolicy
         return $user->isModerator() || $comment->author_id === $user->id;
     }
 
+    public function moderate(User $user)
+    {
+        return $user->role && $user->role->name === 'moderator';
+    }
+
     // Просмотр доступен всем
     public function viewAny(User $user) { return true; }
     public function view(User $user, Comment $comment) { return true; }

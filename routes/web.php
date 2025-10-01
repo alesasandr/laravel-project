@@ -58,3 +58,19 @@ Route::resource('comments', CommentController::class)->only([
     'store', 'edit', 'update', 'destroy'
 ]);
 
+Route::middleware(['auth'])->group(function () {
+    // Страница для модераторов
+    Route::get('/comments/moderation', [CommentController::class, 'moderation'])
+        ->name('comments.moderation')
+        ->middleware('can:moderate,App\Models\Comment');
+
+    // Принять комментарий
+    Route::patch('/comments/{comment}/approve', [CommentController::class, 'approve'])
+        ->name('comments.approve')
+        ->middleware('can:moderate,App\Models\Comment');
+
+    // Отклонить комментарий
+    Route::delete('/comments/{comment}/reject', [CommentController::class, 'reject'])
+        ->name('comments.reject')
+        ->middleware('can:moderate,App\Models\Comment');
+});
