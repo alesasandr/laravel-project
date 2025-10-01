@@ -2,9 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\AuthController;
 
 // Главная — теперь через контроллер
 Route::get('/', [MainController::class, 'index'])->name('home');
+
+// Страница регистрации (форма)
+Route::get('/signin', [AuthController::class, 'create'])->name('signin.create');
+
+// Обработка формы (POST)
+Route::post('/signin', [AuthController::class, 'registration'])->name('signin.registration');
 
 // Галерея — отдельная страница с full_image
 Route::get('/gallery/{id}', [MainController::class, 'gallery'])->name('gallery');
